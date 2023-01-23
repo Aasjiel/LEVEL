@@ -1,17 +1,27 @@
 package es.bbw.ch.level;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
+
+import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.LocalTime;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -61,6 +71,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             this.savedHighScoreValue = sharedPref.getFloat("savedHighScoreValue", this.savedHighScoreValue);
         }
 
+        highScore = String.valueOf(savedHighScoreValue);
+        highScoreValue.setText(Float.toString(savedHighScoreValue) + "s");
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(this, sensor, SAMPLING_RATE);
 
 
 
