@@ -91,6 +91,45 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
 
+
+        if (Math.abs(sensorEvent.values[1]) > Math.abs(sensorEvent.values[0])){
+            scoreDef = sensorEvent.values[1] * 90 / 9.81;
+        } else {
+            scoreDef = sensorEvent.values[0] * 90 / 9.81;
+        }
+        Log.d("score", ((int) Math.round(scoreDef)) + "");
+
+
+        value.setText(String.valueOf((int) Math.round(scoreDef)) + "°");
+
+        if (isPlanar((int) Math.round(scoreDef)) && startTime == null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startTime = LocalTime.now();
+            }
+        }
+
+        if (isPlanar((int) Math.round(scoreDef)) == false && startTime != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                endTime = LocalTime.now();
+                duration = Duration.between(startTime, endTime);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    diffInMillis = duration.toMillis();
+                    DecimalFormat df = new DecimalFormat("#.###");
+                    time = df.format(diffInMillis / 1000);
+                }
+            }
+            if (Float.parseFloat(time) > Float.parseFloat(highScore)) {
+                highScore = time;
+                highScoreValue.setText(highScore + "s");
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putFloat("savedHighScoreValue", Float.parseFloat(highScore));
+                editor.apply();
+                sendNotification(highScore);
+            }
+            startTime = null;
+            endTime = null;
+
+        }
     }
 
     @Override
@@ -123,6 +162,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         notificationManager.notify(0, builder.build());
     }
 
+    private boolean isPlanar(int scoreDef){
+        if(scoreDef == 0) {
+            layout.setBackgroundColor(getResources().getColor(R.color.green, null));
+            return true;
+        }
+        layout.setBackgroundColor(android.R.attr.colorBackground);
+        return false;
+    }
 
 
 }
