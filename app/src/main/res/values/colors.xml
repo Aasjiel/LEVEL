@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="main">#004C92</color>
     <color name="success">#99CD98</color>
+    <color name="green">#99CD98</color>
 </resources>
