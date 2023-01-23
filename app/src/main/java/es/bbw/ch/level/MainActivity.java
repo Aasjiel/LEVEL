@@ -150,13 +150,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    private void sendNotification() {
+    private void sendNotification(String time) {
         createNotificationChannel();
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_media_play)
                 .setContentTitle("Congrats")
-                .setContentText("You have reached a new Highscore!")
+                .setContentText("You have reached a new Highscore! " + time + " seconds")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         notificationManager.notify(0, builder.build());
