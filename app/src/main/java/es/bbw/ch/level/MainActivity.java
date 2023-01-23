@@ -19,18 +19,51 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private static final String CHANNEL_ID = "defaultChannel";
     private static final String CHANNEL_NAME = "Default Channel";
     private static final String CHANNEL_DESC = "some description";
-
     private NotificationManager notificationManager;
 
-    //timer definition
+    //Sensor definitions
+    private SensorManager sensorManager;
+    private Sensor sensor;
+    private final static int SAMPLING_RATE = 200000 ; // in microseconds
 
+    //Field definitions
+    TextView highScoreValue;
+    TextView value;
+    ConstraintLayout layout;
+
+    //timer definition
+    private LocalTime startTime = null;
+    private LocalTime endTime = null;
+    private String time;
+    private Duration duration;
+    private float diffInMillis;
+
+    //score definition
+    private String highScore = "0";
+    private float savedHighScoreValue = 0;
+    private double scoreDef = 0;
+    SharedPreferences sharedPref;
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        layout = findViewById(R.id.baseLayout);
+        this.highScoreValue = findViewById(R.id.highScoreValue);
+        this.sharedPref = getPreferences(MODE_PRIVATE);
+        this.value = findViewById(R.id.value);
 
-        sendNotification();
+        if(savedInstanceState != null && savedInstanceState.containsKey("savedHighScoreValue")) {
+            this.savedHighScoreValue = savedInstanceState.getFloat("savedHighScoreValue");
+        } else {
+            this.savedHighScoreValue = sharedPref.getFloat("savedHighScoreValue", this.savedHighScoreValue);
+        }
+
+
+
+
     }
 
     @Override
